@@ -34,7 +34,7 @@ local split = function(str, sep)
 end
 
 local get_items = function(account_path)
-  local openPop = assert(io.popen(vim.b.hledger_bin .. ' accounts -f ' .. account_path))
+  local openPop = assert(io.popen(vim.b.hledger_bin .. ' accounts -f ' .. account_path:gsub('%s+', '\\ ')))
   local output = openPop:read('*all')
   openPop:close()
   local t = split(output, "\n")
@@ -69,7 +69,7 @@ source.complete = function(self, request, callback)
   end
   local account_path = vim.api.nvim_buf_get_name(0)
   if not self.items then
-    self.items = get_items(account_path)
+    self.items = get_items(account_path:gsub('%s+', '\\ '))
   end
 
   local prefix_mode = false
